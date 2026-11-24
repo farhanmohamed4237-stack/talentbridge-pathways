@@ -1,4 +1,5 @@
 <!-- LOVABLE:BEGIN -->
+
 > [!IMPORTANT]
 > This project is connected to [Lovable](https://lovable.dev). Avoid rewriting
 > published git history — force pushing, or rebasing/amending/squashing commits
@@ -27,4 +28,12 @@ use the editor.
   `LOVABLE_API_KEY`. When Lovable does not provide one, users can bring their
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
+
 <!-- LOVABLE:END -->
+
+## Prototype architecture
+
+- Keep shared career data and deterministic assessment/filtering logic in the browser-safe domain module; this separates prototype rules from future service integrations.
+- Persist only professional profiles and preliminary assessment outcomes through the shared provider, after hydration; credentials and assistant messages must not be persisted.
+- Keep authentication and AI screens as explicitly labeled frontend previews until a real service is requested; never simulate successful sign-in or present scripted replies as live AI.
+- Give each public page its own file route and head metadata; share workspace navigation and layout through presentation components.
