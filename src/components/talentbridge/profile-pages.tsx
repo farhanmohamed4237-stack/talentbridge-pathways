@@ -21,6 +21,7 @@ import {
   type Profile,
 } from "@/lib/talentbridge";
 import { useTalent } from "./store";
+import { assessmentLabel } from "@/lib/assessment";
 import { PageTitle, Logo } from "./shell";
 export function Dashboard() {
   const { profile, assessment, demo } = useTalent();
@@ -69,7 +70,7 @@ export function Dashboard() {
           <strong>{assessment ? `${assessment.score}%` : "Not started"}</strong>
           <p>
             {assessment
-              ? `${assessment.competencies.length} foundational competencies demonstrated`
+              ? `${assessment.competencies.length} assessed competencies demonstrated · ${assessmentLabel(assessment)}`
               : "Discover your foundational workplace strengths."}
             {demo && " · Sample result"}
           </p>
@@ -343,7 +344,10 @@ export function PassportPage() {
   const { profile, assessment, demo } = useTalent();
   function download() {
     const text = `TALENTBRIDGE AI — DIGITAL SKILLS PASSPORT\n${demo ? "FICTIONAL DEMONSTRATION PROFILE\n" : ""}Name: ${profile.name}\nField: ${profile.occupation}\nLocation: ${profile.location}\nEducation (self-reported): ${profile.education}\nExperience (self-reported): ${profile.experience} years\nLanguages: ${profile.languages}\nDocumentation status (unverified): ${profile.documentation}\nSelf-reported skills: ${profile.skills}\nPreliminary assessment: ${assessment ? `${assessment.field}, ${assessment.score}% — ${assessment.competencies.join(", ")}` : "Not completed"}\nNOT an officially recognized certification. No credentials have been verified.\n`;
-    const url = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
+    const details = assessment
+      ? `\nAssessment method: ${assessmentLabel(assessment)}\nFeedback method: ${assessment.feedbackSource === "ai" ? "AI" : "Rule-based"}\nSkills gaps: ${assessment.gaps?.join(", ") || "None recorded"}\nFeedback: ${assessment.feedback || "Not provided"}\nLearning activities:\n${assessment.activities?.map((a) => `- ${a}`).join("\n") || "Not provided"}\n`
+      : "";
+    const url = URL.createObjectURL(new Blob([text, details], { type: "text/plain" }));
     const a = document.createElement("a");
     a.href = url;
     a.download = "talentbridge-skills-passport.txt";
@@ -431,7 +435,7 @@ export function PassportPage() {
           {assessment ? (
             <>
               <p>
-                {assessment.field} · Foundational workplace assessment · {assessment.score}%
+                {assessment.field} · {assessmentLabel(assessment)} · {assessment.score}%
               </p>
               <div className="chips">
                 {assessment.competencies.map((c) => (
@@ -440,6 +444,32 @@ export function PassportPage() {
                   </span>
                 ))}
               </div>
+              {assessment.gaps && assessment.gaps.length > 0 && (
+                <>
+                  <h3>Skills gaps for practice</h3>
+                  <p>{assessment.gaps.join(", ")}</p>
+                </>
+              )}
+              {assessment.feedback && (
+                <>
+                  <h3>
+                    {assessment.feedbackSource === "ai"
+                      ? "Personalized AI feedback"
+                      : "Rule-based feedback"}
+                  </h3>
+                  <p>{assessment.feedback}</p>
+                </>
+              )}
+              {assessment.activities && (
+                <>
+                  <h3>Recommended learning activities</h3>
+                  <ul className="list-disc pl-5 space-y-2">
+                    {assessment.activities.map((activity, i) => (
+                      <li key={i}>{activity}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
             </>
           ) : (
             <p>Assessment not yet completed.</p>
@@ -457,7 +487,8 @@ export function PassportPage() {
 export function RoadmapPage() {
   const { profile, assessment } = useTalent();
   const gaps = assessment
-    ? questions.map((q) => q.skill).filter((s) => !assessment.competencies.includes(s))
+    ? (assessment.gaps ??
+      questions.map((q) => q.skill).filter((s) => !assessment.competencies.includes(s)))
     : [];
   return (
     <>
@@ -471,9 +502,27 @@ export function RoadmapPage() {
         }
       />
       <div className="notice">
-        These rule-based recommendations are a starting point, not live AI advice. Training
-        providers, eligibility and certification recognition must be checked independently.
+        {assessment?.feedbackSource === "ai"
+          ? "Personalized AI feedback and learning activities are based on your preliminary assessment. Other pathway guidance is rule-based."
+          : "These rule-based recommendations are a starting point, not live AI advice."}{" "}
+        Training providers, eligibility and certification recognition must be checked independently.
       </div>
+      {assessment?.feedback && (
+        <section className="form-section">
+          <h2>
+            {assessment.feedbackSource === "ai"
+              ? "Your personalized AI learning plan"
+              : "Your rule-based learning plan"}
+          </h2>
+          <p>{assessment.feedback}</p>
+          <h3>Recommended learning activities</h3>
+          <ul className="list-disc pl-5 space-y-2">
+            {assessment.activities?.map((activity, i) => (
+              <li key={i}>{activity}</li>
+            ))}
+          </ul>
+        </section>
+      )}
       {gaps.length > 0 && (
         <div>
           <h2 className="subheading">Areas to develop</h2>

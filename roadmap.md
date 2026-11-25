@@ -8,7 +8,7 @@
 - [x] Verify flows, responsive layouts and safety rules
 
 ## Functional AI assessments
-- [ ] Connect secure AI question generation and personalized feedback
-- [ ] Preserve scoring and add labelled fallback with privacy filtering
-- [ ] Share results with passport and roadmap
-- [ ] Test real AI requests and the full assessment workflow
+- [x] Connect secure AI question generation and personalized feedback
+- [x] Preserve scoring and add labelled fallback with privacy filtering
+- [x] Share results with passport and roadmap
+- [x] Test real AI requests and the full assessment workflow

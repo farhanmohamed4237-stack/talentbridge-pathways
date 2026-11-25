@@ -8,7 +8,17 @@ export type Profile = {
   languages: string;
   documentation: string;
 };
-export type Assessment = { field: string; score: number; competencies: string[] };
+export type Assessment = {
+  field: string;
+  score: number;
+  competencies: string[];
+  source?: "ai" | "rule-based";
+  feedbackSource?: "ai" | "rule-based";
+  gaps?: string[];
+  feedback?: string;
+  activities?: string[];
+  questionCount?: number;
+};
 export const emptyProfile: Profile = {
   name: "",
   occupation: "",

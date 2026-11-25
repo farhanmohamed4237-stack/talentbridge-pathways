@@ -33,7 +33,9 @@ use the editor.
 
 ## Prototype architecture
 
-- Keep shared career data and deterministic assessment/filtering logic in the browser-safe domain module; this separates prototype rules from future service integrations.
+- Keep shared career data, privacy allowlists, validation and deterministic scoring in browser-safe domain modules; server-only AI helpers generate questions and feedback through typed server functions.
 - Persist only professional profiles and preliminary assessment outcomes through the shared provider, after hydration; credentials and assistant messages must not be persisted.
-- Keep authentication and AI screens as explicitly labeled frontend previews until a real service is requested; never simulate successful sign-in or present scripted replies as live AI.
+- Keep authentication and the career assistant as explicitly labeled frontend previews; only assessments use verified live AI, with separate question/feedback source labels and a rule-based fallback.
 - Give each public page its own file route and head metadata; share workspace navigation and layout through presentation components.
+- Assessment sessions use encrypted, expiring server-issued tokens to protect answer keys and context; profile persistence remains in the existing hydrated provider to preserve current device-only flows.
+- AI assessments use the workspace-permitted Responses endpoint when retention controls block the default; send only canonical fields, numeric experience and allowlisted skill terms, never raw profile text.
