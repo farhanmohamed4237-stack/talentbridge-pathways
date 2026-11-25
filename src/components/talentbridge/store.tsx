@@ -6,6 +6,8 @@ import {
   type Profile,
   type Assessment,
 } from "@/lib/talentbridge";
+import { emptyReadiness, parseReadiness, type Readiness } from "@/lib/readiness";
+const READINESS_KEY = "talentbridge-readiness";
 type Store = {
   profile: Profile;
   assessment: Assessment | null;
@@ -16,6 +18,8 @@ type Store = {
   saveAssessment: (a: Assessment) => boolean;
   startDemo: () => void;
   clear: () => void;
+  readiness: Readiness;
+  saveReadiness: (r: Readiness) => boolean;
 };
 const Context = createContext<Store | null>(null);
 export function TalentProvider({ children }: { children: ReactNode }) {
@@ -24,6 +28,7 @@ export function TalentProvider({ children }: { children: ReactNode }) {
   const [demo, setDemo] = useState(false);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
+  const [readiness, setReadiness] = useState<Readiness>(emptyReadiness);
   useEffect(() => {
     try {
       const raw = localStorage.getItem("talentbridge-prototype");
@@ -44,6 +49,12 @@ export function TalentProvider({ children }: { children: ReactNode }) {
       }
     } catch {
       setError("Saved information could not be loaded. You can start again.");
+    }
+    try {
+      const raw = localStorage.getItem(READINESS_KEY);
+      if (raw) setReadiness(parseReadiness(JSON.parse(raw)));
+    } catch {
+      setError("Saved readiness progress could not be loaded. You can start again.");
     }
     setReady(true);
   }, []);
@@ -84,12 +95,30 @@ export function TalentProvider({ children }: { children: ReactNode }) {
       setAssessment(demoAssessment);
       setDemo(true);
     },
+    readiness,
+    saveReadiness(r) {
+      try {
+        localStorage.setItem(READINESS_KEY, JSON.stringify(parseReadiness(r)));
+        setError("");
+      } catch {
+        setError("Your browser could not save this progress. Please allow local storage and try again.");
+        return false;
+      }
+      setReadiness(r);
+      return true;
+    },
     clear() {
       if (persist(emptyProfile, null, false)) {
         setProfile(emptyProfile);
         setAssessment(null);
         setDemo(false);
       }
+      try {
+        localStorage.removeItem(READINESS_KEY);
+      } catch {
+        /* ignore */
+      }
+      setReadiness(emptyReadiness);
     },
   };
   return <Context.Provider value={value}>{children}</Context.Provider>;

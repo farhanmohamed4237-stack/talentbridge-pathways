@@ -23,6 +23,13 @@ import {
 import { useTalent } from "./store";
 import { assessmentLabel } from "@/lib/assessment";
 import { PageTitle, Logo } from "./shell";
+import {
+  readinessItems,
+  financialItems,
+  checklistPercent,
+  outstanding,
+  credentialLabel,
+} from "@/lib/readiness";
 export function Dashboard() {
   const { profile, assessment, demo } = useTalent();
   const percent = completion(profile);
@@ -341,13 +348,18 @@ export function ProfilePage() {
   );
 }
 export function PassportPage() {
-  const { profile, assessment, demo } = useTalent();
+  const { profile, assessment, demo, readiness } = useTalent();
+  const readinessPct = checklistPercent(readiness.checklist, readinessItems.map((i) => i.id));
+  const financialPct = checklistPercent(readiness.financial, financialItems.map((i) => i.id));
+  const readinessText = readiness.includeInPassport
+    ? `\nSelf-reported readiness (unverified): employment checklist ${readinessPct}%, financial checklist ${financialPct}%, credential recognition: ${credentialLabel(readiness.credential)}\n`
+    : "";
   function download() {
     const text = `TALENTBRIDGE AI — DIGITAL SKILLS PASSPORT\n${demo ? "FICTIONAL DEMONSTRATION PROFILE\n" : ""}Name: ${profile.name}\nField: ${profile.occupation}\nLocation: ${profile.location}\nEducation (self-reported): ${profile.education}\nExperience (self-reported): ${profile.experience} years\nLanguages: ${profile.languages}\nDocumentation status (unverified): ${profile.documentation}\nSelf-reported skills: ${profile.skills}\nPreliminary assessment: ${assessment ? `${assessment.field}, ${assessment.score}% — ${assessment.competencies.join(", ")}` : "Not completed"}\nNOT an officially recognized certification. No credentials have been verified.\n`;
     const details = assessment
       ? `\nAssessment method: ${assessmentLabel(assessment)}\nFeedback method: ${assessment.feedbackSource === "ai" ? "AI" : "Rule-based"}\nSkills gaps: ${assessment.gaps?.join(", ") || "None recorded"}\nFeedback: ${assessment.feedback || "Not provided"}\nLearning activities:\n${assessment.activities?.map((a) => `- ${a}`).join("\n") || "Not provided"}\n`
       : "";
-    const url = URL.createObjectURL(new Blob([text, details], { type: "text/plain" }));
+    const url = URL.createObjectURL(new Blob([text, details, readinessText], { type: "text/plain" }));
     const a = document.createElement("a");
     a.href = url;
     a.download = "talentbridge-skills-passport.txt";
@@ -474,6 +486,15 @@ export function PassportPage() {
           ) : (
             <p>Assessment not yet completed.</p>
           )}
+          {readiness.includeInPassport && (
+            <>
+              <h3>Employment readiness · Self-reported, unverified</h3>
+              <p>
+                Employment checklist {readinessPct}% · Financial checklist {financialPct}% ·
+                Credential recognition: {credentialLabel(readiness.credential)}
+              </p>
+            </>
+          )}
           <div className="notice mt-7">
             This passport is a prototype summary, not an officially recognized certification.
             Education, experience and documentation have not been independently verified.
@@ -485,7 +506,8 @@ export function PassportPage() {
   );
 }
 export function RoadmapPage() {
-  const { profile, assessment } = useTalent();
+  const { profile, assessment, readiness } = useTalent();
+  const readinessTodo = outstanding(readinessItems, readiness.checklist);
   const gaps = assessment
     ? (assessment.gaps ??
       questions.map((q) => q.skill).filter((s) => !assessment.competencies.includes(s)))
@@ -575,6 +597,15 @@ export function RoadmapPage() {
           to: "/opportunities",
           label: "Explore example opportunities",
         },
+        {
+          icon: Check,
+          title: "Complete your employment readiness",
+          text: readinessTodo.length
+            ? `Your self-reported checklist is ${checklistPercent(readiness.checklist, readinessItems.map((i) => i.id))}% complete. Next: ${readinessTodo[0]?.title.toLowerCase()}.`
+            : "You have marked every readiness item as completed or not applicable. This is self-reported and not a verification of eligibility.",
+          to: "/readiness",
+          label: "Open readiness centre",
+        },
       ].map((s, i) => (
         <article className="roadmap-step" key={s.title}>
           <div className="icon-box">
@@ -586,7 +617,7 @@ export function RoadmapPage() {
             <p>{s.text}</p>
             <Link
               className="text-link"
-              to={s.to as "/profile" | "/assessment" | "/guidance" | "/opportunities"}
+              to={s.to as "/profile" | "/assessment" | "/guidance" | "/opportunities" | "/readiness"}
             >
               {s.label} <ArrowRight size={14} />
             </Link>

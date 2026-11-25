@@ -1388,3 +1388,10 @@ svg {
     display: block !important;
   }
 }
+.readiness-progress { margin: 8px 0 18px; }
+.readiness-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.readiness-row { display: grid; grid-template-columns: 1fr 200px; gap: 16px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.readiness-row h3 { font-weight: 600; }
+.readiness-row p { font-size: 14px; color: var(--muted-foreground); }
+@media (max-width: 640px) { .readiness-row { grid-template-columns: 1fr; gap: 8px; } }
+.readiness-progress .metric-top { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 8px; }

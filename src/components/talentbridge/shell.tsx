@@ -14,6 +14,8 @@ import {
   ShieldCheck,
   Sparkles,
   ArrowRight,
+  ListChecks,
+  Building2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTalent } from "./store";
@@ -43,9 +45,11 @@ export const appNav = [
   { to: "/assessment", label: "Skills assessment", icon: ClipboardCheck },
   { to: "/passport", label: "Skills passport", icon: ContactRound },
   { to: "/roadmap", label: "Career roadmap", icon: RouteIcon },
+  { to: "/readiness", label: "Readiness centre", icon: ListChecks },
   { to: "/opportunities", label: "Opportunities", icon: BriefcaseBusiness },
   { to: "/guidance", label: "Legal & financial guidance", icon: ShieldCheck },
   { to: "/assistant", label: "Career assistant", icon: Sparkles },
+  { to: "/employers", label: "Employer hub", icon: Building2 },
 ] as const;
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -66,6 +70,9 @@ export function Header() {
           </Link>
           <Link to="/guidance" activeProps={{ className: "nav-active" }}>
             Resources
+          </Link>
+          <Link to="/employers" activeProps={{ className: "nav-active" }}>
+            For employers
           </Link>
         </nav>
         <div className="header-actions">

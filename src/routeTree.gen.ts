@@ -13,12 +13,14 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AssessmentRouteImport } from './routes/assessment'
 import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as EmployersRouteImport } from './routes/employers'
 import { Route as GuidanceRouteImport } from './routes/guidance'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as OpportunitiesRouteImport } from './routes/opportunities'
 import { Route as PassportRouteImport } from './routes/passport'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ReadinessRouteImport } from './routes/readiness'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
 
@@ -40,6 +42,11 @@ const AssistantRoute = AssistantRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmployersRoute = EmployersRouteImport.update({
+  id: '/employers',
+  path: '/employers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GuidanceRoute = GuidanceRouteImport.update({
@@ -72,6 +79,11 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReadinessRoute = ReadinessRouteImport.update({
+  id: '/readiness',
+  path: '/readiness',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -88,12 +100,14 @@ export interface FileRoutesByFullPath {
   '/assessment': typeof AssessmentRoute
   '/assistant': typeof AssistantRoute
   '/dashboard': typeof DashboardRoute
+  '/employers': typeof EmployersRoute
   '/guidance': typeof GuidanceRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/opportunities': typeof OpportunitiesRoute
   '/passport': typeof PassportRoute
   '/profile': typeof ProfileRoute
+  '/readiness': typeof ReadinessRoute
   '/register': typeof RegisterRoute
   '/roadmap': typeof RoadmapRoute
 }
@@ -102,12 +116,14 @@ export interface FileRoutesByTo {
   '/assessment': typeof AssessmentRoute
   '/assistant': typeof AssistantRoute
   '/dashboard': typeof DashboardRoute
+  '/employers': typeof EmployersRoute
   '/guidance': typeof GuidanceRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/opportunities': typeof OpportunitiesRoute
   '/passport': typeof PassportRoute
   '/profile': typeof ProfileRoute
+  '/readiness': typeof ReadinessRoute
   '/register': typeof RegisterRoute
   '/roadmap': typeof RoadmapRoute
 }
@@ -117,12 +133,14 @@ export interface FileRoutesById {
   '/assessment': typeof AssessmentRoute
   '/assistant': typeof AssistantRoute
   '/dashboard': typeof DashboardRoute
+  '/employers': typeof EmployersRoute
   '/guidance': typeof GuidanceRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/opportunities': typeof OpportunitiesRoute
   '/passport': typeof PassportRoute
   '/profile': typeof ProfileRoute
+  '/readiness': typeof ReadinessRoute
   '/register': typeof RegisterRoute
   '/roadmap': typeof RoadmapRoute
 }
@@ -133,12 +151,14 @@ export interface FileRouteTypes {
     | '/assessment'
     | '/assistant'
     | '/dashboard'
+    | '/employers'
     | '/guidance'
     | '/how-it-works'
     | '/login'
     | '/opportunities'
     | '/passport'
     | '/profile'
+    | '/readiness'
     | '/register'
     | '/roadmap'
   fileRoutesByTo: FileRoutesByTo
@@ -147,12 +167,14 @@ export interface FileRouteTypes {
     | '/assessment'
     | '/assistant'
     | '/dashboard'
+    | '/employers'
     | '/guidance'
     | '/how-it-works'
     | '/login'
     | '/opportunities'
     | '/passport'
     | '/profile'
+    | '/readiness'
     | '/register'
     | '/roadmap'
   id:
@@ -161,12 +183,14 @@ export interface FileRouteTypes {
     | '/assessment'
     | '/assistant'
     | '/dashboard'
+    | '/employers'
     | '/guidance'
     | '/how-it-works'
     | '/login'
     | '/opportunities'
     | '/passport'
     | '/profile'
+    | '/readiness'
     | '/register'
     | '/roadmap'
   fileRoutesById: FileRoutesById
@@ -176,12 +200,14 @@ export interface RootRouteChildren {
   AssessmentRoute: typeof AssessmentRoute
   AssistantRoute: typeof AssistantRoute
   DashboardRoute: typeof DashboardRoute
+  EmployersRoute: typeof EmployersRoute
   GuidanceRoute: typeof GuidanceRoute
   HowItWorksRoute: typeof HowItWorksRoute
   LoginRoute: typeof LoginRoute
   OpportunitiesRoute: typeof OpportunitiesRoute
   PassportRoute: typeof PassportRoute
   ProfileRoute: typeof ProfileRoute
+  ReadinessRoute: typeof ReadinessRoute
   RegisterRoute: typeof RegisterRoute
   RoadmapRoute: typeof RoadmapRoute
 }
@@ -214,6 +240,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/employers': {
+      id: '/employers'
+      path: '/employers'
+      fullPath: '/employers'
+      preLoaderRoute: typeof EmployersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guidance': {
@@ -258,6 +291,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/readiness': {
+      id: '/readiness'
+      path: '/readiness'
+      fullPath: '/readiness'
+      preLoaderRoute: typeof ReadinessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register': {
       id: '/register'
       path: '/register'
@@ -280,12 +320,14 @@ const rootRouteChildren: RootRouteChildren = {
   AssessmentRoute: AssessmentRoute,
   AssistantRoute: AssistantRoute,
   DashboardRoute: DashboardRoute,
+  EmployersRoute: EmployersRoute,
   GuidanceRoute: GuidanceRoute,
   HowItWorksRoute: HowItWorksRoute,
   LoginRoute: LoginRoute,
   OpportunitiesRoute: OpportunitiesRoute,
   PassportRoute: PassportRoute,
   ProfileRoute: ProfileRoute,
+  ReadinessRoute: ReadinessRoute,
   RegisterRoute: RegisterRoute,
   RoadmapRoute: RoadmapRoute,
 }
