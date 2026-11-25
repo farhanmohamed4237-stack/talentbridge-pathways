@@ -171,4 +171,4 @@ The following are **planned** and not yet built:
 
 **https://talentbridge-pathways.lovable.app**
 
-Select **Try demo** on the landing page to explore with a sample profile, or create your own profile to take an AI assessment.
+Select **Explore demo** on the landing page to explore with a sample profile, or create your own profile to take an AI assessment.
